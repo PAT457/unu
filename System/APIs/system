@@ -1,0 +1,42 @@
+--[[
+System API
+--]]
+
+local programs = {}
+local w, h = term.getSize()
+local current
+
+function startScreen()
+	screen = window.create(term.current(), 1, 1, w, h, true)
+	current = 0
+	term.redirect(screen)
+end
+
+function addProgram(lead)
+	programs[#programs+1] = window.create(term.native(), 1, 1, w, h-1, true)
+	if current == 0 then
+		screen.setVisible(false)
+		else
+		programs[current].setVisible(false)
+	end
+	current = #programs
+	term.redirect(programs[current])
+	os.run({}, lead)
+	switchToDesktop()
+	return current
+end
+
+function setCurrent(id)
+	current = id
+	term.redirect(programs[current])
+end
+
+function switchToDesktop()
+	if current == 0 then return
+		else
+		programs[current].setVisible(false)
+		screen.setVisible(true)
+		current = 0
+		term.redirect(screen)
+	end
+end

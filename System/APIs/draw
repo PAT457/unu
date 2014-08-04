@@ -1,0 +1,13 @@
+--[[
+Draw API
+--]]
+
+function drawSquare(sx, sy, ex, ey, color)
+	for y = sy, ey do
+		paintutils.drawLine(sx, y, ex, y, color)
+	end
+end
+
+function getImagePixel(image, x, y)
+return image[y][x]
+end

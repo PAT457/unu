@@ -1,0 +1,6 @@
+local totalSpace, sysSpace, userSpace, otherSpace, freeSpace = system.getSpace()
+
+term.setBackgroundColor(colors.gray)
+term.clear()
+term.setTextColor(colors.white)
+print(totalSpace, sysSpace, userSpace, otherSpace, freeSpaces)

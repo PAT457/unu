@@ -1,0 +1,9 @@
+--[[
+Shell API
+(Uwaga: Tylko Do Wymiany Shell API)
+--]]
+
+function run(prg)
+	print(prg)
+	os.run({}, prg)
+end

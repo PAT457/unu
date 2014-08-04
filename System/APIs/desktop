@@ -1,0 +1,75 @@
+--[[
+Dekstop API
+--]]
+
+local desktopConfig = "/System/configs/desktop"
+local image
+local w, h = term.getSize()
+--os.loadAPI("/System/APIs/draw")
+
+function reload()
+	local config = fs.open(desktopConfig, "r").readAll()
+	config = textutils.unserialize(config)
+	image = paintutils.loadImage(config.image)
+
+	paintutils.drawImage(image, 1, 1)
+	local pixelColor = draw.getImagePixel(image, w, h)
+	term.setBackgroundColor(pixelColor)
+	term.setTextColor(colors.white)
+	term.setCursorPos(w, h)
+	write("*")
+	drawIcons(getIcons())
+end
+
+function drawDesktop()
+	if image then
+		paintutils.drawImage(image, 1, 1)
+	else
+		reload()
+	end
+end
+
+function getIcons()
+	return fs.list("/User/Icons/")
+end
+
+function drawIcons(icons)
+	for k, v in pairs(icons) do
+		local config = fs.open("/User/Icons/"..v.."/config", "r").readAll()
+		config = textutils.unserialize(config)
+		if config.type == "src" then
+			local lead = fs.open("/User/Icons/"..v.."/lead", "r").readAll()
+			local Iimage = paintutils.loadImage(lead.."Icon")
+			paintutils.drawImage(Iimage, config.x, config.y)
+			local name = {}
+			for i = 1, #v do
+				name[i] = v:sub(i, i)
+			end
+			term.setTextColor(colors.white)
+			for i = 1, 6 do
+				term.setBackgroundColor(draw.getImagePixel(image ,config.x-1+(i-1), config.y+3))
+				term.setCursorPos(config.x-1+(i-1), config.y+3)
+				write(name[i])
+			end
+		end
+	end
+end
+
+function getIconInfo(icons)
+	local info = {}
+	for k, v in pairs(icons) do
+		local iconInfo = {}
+		local config = fs.open("/User/Icons/"..v.."/config", "r").readAll()
+		config = textutils.unserialize(config)
+		if config.type == "src" then
+			local lead = fs.open("/User/Icons/"..v.."/lead", "r").readAll()
+			iconInfo.x = config.x
+			iconInfo.y = config.y
+			iconInfo.name = v
+			iconInfo.lead = lead
+		end
+		table.insert(info, iconInfo)
+	end
+	return info
+end
+		
